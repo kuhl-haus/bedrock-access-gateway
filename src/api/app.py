@@ -8,7 +8,17 @@ from fastapi.responses import PlainTextResponse
 from mangum import Mangum
 
 from api.routers import model, chat, embeddings
-from api.setting import API_ROUTE_PREFIX, TITLE, DESCRIPTION, SUMMARY, VERSION
+from api.setting import (
+    API_ROUTE_PREFIX,
+    TITLE,
+    DESCRIPTION,
+    SUMMARY,
+    VERSION,
+    DEFAULT_MODEL,
+    DEFAULT_EMBEDDING_MODEL,
+    ENABLE_CROSS_REGION_INFERENCE,
+    SECRET_ARN_PARAMETER,
+)
 
 config = {
     "title": TITLE,
@@ -39,7 +49,15 @@ app.include_router(embeddings.router, prefix=API_ROUTE_PREFIX)
 @app.get("/health")
 async def health():
     """For health check if needed"""
-    return {"status": "OK"}
+    return {
+        "status": "OK",
+        "version": VERSION,
+        "api_route_prefix": API_ROUTE_PREFIX,
+        "default_model": DEFAULT_MODEL,
+        "default_embedding_model": DEFAULT_EMBEDDING_MODEL,
+        "enable_cross_region_inference": ENABLE_CROSS_REGION_INFERENCE,
+        "secret_arn_parameter": SECRET_ARN_PARAMETER,
+    }
 
 
 @app.exception_handler(RequestValidationError)

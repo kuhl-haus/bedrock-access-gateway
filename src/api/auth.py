@@ -1,14 +1,11 @@
-import json
-import os
 from functools import lru_cache
 from typing import Annotated
 
+from api.setting import AWS_REGION, SECRET_ARN_PARAMETER
 from boto3.session import Session
 from botocore.config import Config
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-
-from api.setting import DEFAULT_API_KEYS, AWS_REGION
 
 
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#overview
@@ -79,18 +76,8 @@ def __get_secret_string(arn):
         raise RuntimeError(f"Unhandled exception raised: {repr(e)}") from e
 
 
-api_key_param = os.environ.get("API_KEY_PARAM_NAME")
-api_key_secret_arn = os.environ.get("API_KEY_SECRET_ARN")
-api_key_env = os.environ.get("API_KEY")
-if api_key_param:
-    api_key = __get_ssm_parameter(parameter_name=api_key_param)
-elif api_key_secret_arn:
-    api_key = __get_secret_string(arn=api_key_secret_arn)
-elif api_key_env:
-    api_key = api_key_env
-else:
-    # For local use only.
-    api_key = DEFAULT_API_KEYS
+api_key_secret_arn = __get_ssm_parameter(parameter_name=SECRET_ARN_PARAMETER)
+api_key = __get_secret_string(arn=api_key_secret_arn)
 
 security = HTTPBearer()
 
