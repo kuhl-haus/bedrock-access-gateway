@@ -1,12 +1,13 @@
 import os
 
 DEFAULT_API_KEYS = "bedrock"
+SECRET_ARN_PARAMETER = os.environ.get("SECRET_ARN_PARAMETER", "BedrockApiKey")
 
 API_ROUTE_PREFIX = "/api/v1"
 
 TITLE = "Amazon Bedrock Proxy APIs"
 SUMMARY = "OpenAI-Compatible RESTful APIs for Amazon Bedrock"
-VERSION = "0.1.0"
+VERSION = "0.2.8"
 DESCRIPTION = """
 Use OpenAI-Compatible RESTful APIs for Amazon Bedrock models.
 """
