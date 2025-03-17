@@ -10,14 +10,14 @@ from mangum import Mangum
 from api.routers import model, chat, embeddings
 from api.setting import (
     API_ROUTE_PREFIX,
-    TITLE,
-    DESCRIPTION,
-    SUMMARY,
-    VERSION,
-    DEFAULT_MODEL,
     DEFAULT_EMBEDDING_MODEL,
+    DEFAULT_MODEL,
+    DESCRIPTION,
     ENABLE_CROSS_REGION_INFERENCE,
     SECRET_ARN_PARAMETER,
+    SUMMARY,
+    TITLE,
+    VERSION,
 )
 
 config = {
@@ -40,6 +40,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(model.router, prefix=API_ROUTE_PREFIX)
 app.include_router(chat.router, prefix=API_ROUTE_PREFIX)
