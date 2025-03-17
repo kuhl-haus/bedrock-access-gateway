@@ -8,34 +8,16 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 
-# https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#overview
-def __get_default_config() -> Config:
-    return Config(
-        region_name=AWS_REGION,
-        signature_version="v4",
-        retries={
-            "max_attempts": 3,
-            "mode": "standard",
-        },
-    )
-
-
-def __get_default_session() -> Session:
-    return Session(region_name=AWS_REGION)
-
-
-def __get_client_for_service(service_name, session: Session = None, config: Config = None):
+@lru_cache()
+def __get_client_for_service(service_name):
     """
     This method will return a boto3 client for the service_name given.
 
     :param service_name: Valid name of an AWS service
-    :param session: Optional - boto3 session
-    :param config: Optional- boto3 config
     """
-    if session is None:
-        session = __get_default_session()
-    if config is None:
-        config = __get_default_config()
+    # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#overview
+    session = Session(region_name=AWS_REGION)
+    config = Config(region_name=AWS_REGION, signature_version="v4", retries={"max_attempts": 3, "mode": "standard",})
     available_services = session.get_available_services()
     if service_name in available_services:
         return session.client(service_name=service_name, config=config)
